@@ -1,139 +1,101 @@
---== ThienGonYT - Tối Ưu FPS Cho Máy Yếu ==--
+--== LOADER V3 - BOOST FPS CHO MÁY YẾU ✅❌ ==--
 
-local CoreGui = game:GetService("CoreGui")
+local player = game.Players.LocalPlayer
 
--- Xoá nếu có sẵn
-for _, name in ipairs({"FPS_Optimizer_GUI", "ThienGonYT_Logo"}) do
-	local gui = CoreGui:FindFirstChild(name)
-	if gui then gui:Destroy() end
-end
+-- GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "ThienGonYT_BoostFPS"
+gui.ResetOnSpawn = false
 
--- GUI chính
-local gui = Instance.new("ScreenGui", CoreGui)
-gui.Name = "FPS_Optimizer_GUI"
-
+-- Frame menu
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 220, 0, 180)
-frame.Position = UDim2.new(0, 20, 0, 100)
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0, 100, 0.5, -50)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 
--- Nút Tắt
+-- Nút đóng
 local closeBtn = Instance.new("TextButton", frame)
 closeBtn.Size = UDim2.new(0, 25, 0, 25)
 closeBtn.Position = UDim2.new(1, -30, 0, 5)
-closeBtn.Text = "❌"
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-closeBtn.BorderSizePixel = 0
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 14
+closeBtn.Text = "X"
+closeBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 18
 
--- Giao diện logo nhỏ gọn
-local logoGui = Instance.new("ScreenGui", CoreGui)
-logoGui.Name = "ThienGonYT_Logo"
-
-local logoBtn = Instance.new("TextButton")
-logoBtn.Name = "LogoButton"
+-- Logo bật lại
+local logoBtn = Instance.new("TextButton", gui)
 logoBtn.Size = UDim2.new(0, 50, 0, 50)
-logoBtn.Position = UDim2.new(0, 20, 1, -70)
-logoBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-logoBtn.Text = "⚡"
-logoBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-logoBtn.Font = Enum.Font.GothamBlack
-logoBtn.TextSize = 20
-logoBtn.AutoButtonColor = true
-logoBtn.Draggable = true
-logoBtn.Active = true
+logoBtn.Position = UDim2.new(0, 10, 0, 10)
+logoBtn.Text = "ThienGonYT"
+logoBtn.TextScaled = true
 logoBtn.Visible = false
-logoBtn.Parent = logoGui
-
--- Tắt/mở GUI
-closeBtn.MouseButton1Click:Connect(function()
-	gui.Enabled = false
-	logoBtn.Visible = true
-end)
+logoBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+logoBtn.TextColor3 = Color3.new(1, 1, 1)
+logoBtn.Draggable = true
 
 logoBtn.MouseButton1Click:Connect(function()
-	gui.Enabled = true
+	frame.Visible = true
 	logoBtn.Visible = false
 end)
 
--- Tạo các nút chức năng
-local function createButton(text, yPos, callback)
-	local btn = Instance.new("TextButton", frame)
-	btn.Size = UDim2.new(1, -20, 0, 40)
-	btn.Position = UDim2.new(0, 10, 0, yPos)
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 14
-	btn.Text = text
-	local toggled = false
-
-	btn.MouseButton1Click:Connect(function()
-		toggled = not toggled
-		callback(toggled)
-		btn.Text = (toggled and "✅ ") .. text or text
-		btn.BackgroundColor3 = toggled and Color3.fromRGB(35, 100, 35) or Color3.fromRGB(50, 50, 50)
-	end)
-end
-
--- ☁️ Xóa Sương Mù
-createButton("☁️ Xóa Sương Mù", 35, function(on)
-	local lighting = game:GetService("Lighting")
-	if on then
-		lighting.FogStart = 1e10
-		lighting.FogEnd = 1e10
-		lighting.GlobalShadows = false
-	else
-		lighting.FogStart = 0
-		lighting.FogEnd = 1000
-		lighting.GlobalShadows = true
-	end
+closeBtn.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	logoBtn.Visible = true
 end)
 
--- 🧊 Giảm Đồ Họa
-createButton("🧊 Giảm Đồ Họa", 80, function(on)
-	if on then
-		local terrain = workspace:FindFirstChildOfClass("Terrain")
+-- Nút Boost FPS ✅❌
+local btn = Instance.new("TextButton", frame)
+btn.Size = UDim2.new(1, -10, 0, 40)
+btn.Position = UDim2.new(0, 5, 0, 40)
+btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+btn.TextColor3 = Color3.new(1, 1, 1)
+btn.Font = Enum.Font.SourceSansBold
+btn.TextSize = 18
+btn.Text = "Chế Độ Nhanh ❌"
+
+local state = false
+
+btn.MouseButton1Click:Connect(function()
+	state = not state
+	btn.Text = "Chế Độ Nhanh " .. (state and "✅" or "❌")
+
+	local lighting = game:GetService("Lighting")
+	local terrain = workspace:FindFirstChildOfClass("Terrain")
+
+	if state then
+		-- Boost FPS: tắt hiệu ứng, làm nhẹ
+		lighting.GlobalShadows = false
+		lighting.FogEnd = 1e10
+		lighting.Brightness = 1
+		lighting.OutdoorAmbient = Color3.new(0.5, 0.5, 0.5)
+
 		if terrain then
 			terrain.WaterWaveSize = 0
 			terrain.WaterWaveSpeed = 0
 			terrain.WaterReflectance = 0
 			terrain.WaterTransparency = 1
+			pcall(function() terrain.Decorations = false end)
 		end
-		for _, v in ipairs(game:GetDescendants()) do
-			if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-				v.Enabled = false
-			elseif v:IsA("Decal") then
-				v.Transparency = 1
-			elseif v:IsA("SurfaceAppearance") then
-				v:Destroy()
-			end
-		end
-		for _, v in ipairs(workspace:GetDescendants()) do
-			if v:IsA("BasePart") or v:IsA("MeshPart") then
-				v.Material = Enum.Material.SmoothPlastic
-				v.Reflectance = 0
-				if v:IsA("MeshPart") then
-					v.TextureID = ""
-				end
-			end
-		end
-	end
-end)
 
--- 🎥 Tắt Hiệu Ứng Camera
-createButton("🎥 Tắt Hiệu Ứng Camera", 125, function(on)
-	local lighting = game:GetService("Lighting")
-	for _, v in ipairs(lighting:GetChildren()) do
-		if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("BloomEffect") then
-			if on then
-				v:Destroy()
+		for _, v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") and v.Material == Enum.Material.Grass then
+				v.Material = Enum.Material.SmoothPlastic
+			end
+			if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+				v.Enabled = false
+			end
+			if v:IsA("Decal") then
+				v.Transparency = 1
 			end
 		end
+	else
+		-- Khôi phục mặc định (tạm thời)
+		lighting.GlobalShadows = true
+		lighting.FogEnd = 1000
+		lighting.Brightness = 2
 	end
 end)
